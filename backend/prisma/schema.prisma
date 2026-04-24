@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
+  password  String
+  nombre    String
+  rol       Rol        @default(PRESTAMISTA)
+  activo    Boolean    @default(true)
+  creadoEn  DateTime   @default(now())
+  prestamos Prestamo[]
+}
+
+model Cliente {
+  id        Int        @id @default(autoincrement())
+  nombre    String
+  cedula    String     @unique
+  telefono  String
+  direccion String
+  creadoEn  DateTime   @default(now())
+  prestamos Prestamo[]
+}
+
+model Prestamo {
+  id          Int      @id @default(autoincrement())
+  monto       Decimal
+  interes     Decimal
+  cuotas      Int
+  estado      Estado   @default(ACTIVO)
+  fechaInicio DateTime @default(now())
+  clienteId   Int
+  usuarioId   Int
+  cliente     Cliente  @relation(fields: [clienteId], references: [id])
+  usuario     Usuario  @relation(fields: [usuarioId], references: [id])
+  pagos       Pago[]
+}
+
+model Pago {
+  id         Int      @id @default(autoincrement())
+  monto      Decimal
+  fecha      DateTime @default(now())
+  prestamoId Int
+  prestamo   Prestamo @relation(fields: [prestamoId], references: [id])
+}
+
+enum Rol {
+  ADMIN
+  PRESTAMISTA
+  COBRADOR
+}
+
+enum Estado {
+  ACTIVO
+  PAGADO
+  VENCIDO
+}
