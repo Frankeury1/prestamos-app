@@ -78,6 +78,13 @@ export default function Dashboard() {
           >
             Préstamos
           </button>
+          <button 
+          onClick={() => router.push('/pagos')} 
+          className="text-gray-400 hover:text-white"
+          >
+            Pagos
+            </button>
+            
           <button
             onClick={cerrarSesion}
             className="bg-red-600 hover:bg-red-700 px-4 py-1 rounded-lg text-sm transition-colors"
